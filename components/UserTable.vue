@@ -28,7 +28,7 @@
           <td>{{ user.age }}</td>
           <td>{{ user.role }}</td>
           <td>
-            {{ new Date(user.createdAt).toLocaleDateString() }}
+            {{ formatDate(user.createdAt) }}
           </td>
         </tr>
       </tbody>
@@ -36,15 +36,21 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  users: {
-    type: Array,
-    required: true,
-  },
-})
+<script setup lang="ts">
+import type {User} from '~/types/User.ts'
+defineProps<{
+  users: User[]
+}>()
 
 defineEmits(['sort'])
+
+function formatDate(date: string) {
+  return date
+    .slice(0, 10)
+    .split('-')
+    .reverse()
+    .join('.');
+}
 </script>
 
 <style scoped>

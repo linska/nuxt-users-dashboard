@@ -1,9 +1,9 @@
 <template>
   <div class="filters">
     <input
-      :value="search"
-      @input="$emit('update:search', $event.target.value)"
+      v-model="localSearch"
       placeholder="Search by name or email"
+      @input="updateSearch"
     />
 
     <BaseSelect
@@ -15,23 +15,50 @@
     <BaseSelect
       :model-value="perPage"
       @update:model-value="$emit('update:perPage', Number($event))"
-      :options="[10, 15, 20]"
+      :options="perPageOptions"
     />
   </div>
 </template>
 
-<script setup>
-defineProps({
-  search: String,
-  role: String,
-  perPage: Number,
-})
+<script setup lang="ts">
+import {PER_PAGE_OPTIONS, type PerPage} from '~/constants/pagination';
 
-defineEmits([
+const props = defineProps<{
+  search?: string;
+  role?: string | null;
+  perPage?: PerPage;
+}>()
+
+const emit = defineEmits([
   'update:search',
   'update:role',
   'update:perPage',
 ])
+
+const perPageOptions = [...PER_PAGE_OPTIONS]
+
+const localSearch = ref(props.search);
+
+let searchTimer: ReturnType<typeof setTimeout>;
+
+function updateSearch() {
+  clearTimeout(searchTimer);
+
+  searchTimer = setTimeout(() => {
+    emit('update:search', localSearch.value);
+  }, 300);
+}
+
+watch(
+  () => props.search,
+  value => {
+    localSearch.value = value;
+  },
+);
+
+onBeforeUnmount(() => {
+  clearTimeout(searchTimer);
+});
 </script>
 
 <style scoped>
