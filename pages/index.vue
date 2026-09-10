@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="container users">
     <UserFilters
       :search="search"
       :role="role"
@@ -14,6 +14,7 @@
       @sort="onSort"
       :sort-by="sortBy"
       :sort-direction="sortDirection"
+      :search="search"
     />
 
     <PaginationControls
@@ -42,5 +43,9 @@ const {
 </script>
 
 <style scoped>
-
+.users {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 </style>

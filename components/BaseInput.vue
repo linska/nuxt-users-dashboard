@@ -95,6 +95,7 @@ function clearInput() {
   display: grid;
   place-items: center;
 
+  min-width: 24px;
   width: 24px;
   height: 24px;
   padding: 0;
@@ -108,6 +109,7 @@ function clearInput() {
 
 .search-field__clear:hover {
   color: var(--text-color);
+  background-color: transparent;
 }
 
 .search-field__input::placeholder {

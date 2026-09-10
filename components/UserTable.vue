@@ -34,8 +34,18 @@
           v-for="user in users"
           :key="user.id"
         >
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
+          <td>
+            <HighlightedText
+              :text="user.name"
+              :query="search"
+            />
+          </td>
+          <td>
+            <HighlightedText
+              :text="user.email"
+              :query="search"
+            />
+          </td>
           <td class="center">{{ user.age }}</td>
           <td class="center">{{ user.role }}</td>
           <td class="center">
@@ -50,11 +60,13 @@
 <script setup lang="ts">
 import type {User} from '~/types/User.ts'
 import type {SortDirection, SortField} from "~/constants/sorting.ts";
+import HighlightedText from "~/components/HighlightedText.vue";
 
 const props = defineProps<{
   users: User[],
   sortBy: SortField,
   sortDirection: SortDirection,
+  search: string;
 }>()
 
 defineEmits<{
@@ -80,11 +92,24 @@ function getSortIcon(field: SortField) {
 
 <style scoped>
 .table-wrapper {
-  height: 450px;
+  height: 100%;
   overflow: auto;
   border: 1px solid var(--border-color);
   border-radius: 12px;
   background: var(--surface-bg);
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th,
+td {
+  white-space: nowrap;
 }
 
 thead th {
@@ -118,4 +143,22 @@ tr:last-child td {
   border-bottom: none;
 }
 
+.table-wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: var(--surface-bg);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  border: 2px solid var(--surface-bg);
+  border-radius: 999px;
+  background: var(--control-border);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--control-border-hover);
+}
 </style>

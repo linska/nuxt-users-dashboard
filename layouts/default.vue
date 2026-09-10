@@ -27,20 +27,34 @@ function updateTheme(value: boolean) {
   theme.value = value ? 'dark' : 'light';
 }
 
+const title = 'User Dashboard | Nuxt';
+const description =
+  'A responsive user dashboard with search, filtering, sorting, pagination, and light and dark themes.';
+
 useHead(() => ({
   htmlAttrs: {
     class: isDark.value ? 'dark' : '',
+    lang: 'en',
   },
 }));
+
+useSeoMeta({
+  title: title,
+  ogTitle: title,
+  description: description,
+  ogDescription: description,
+  ogType: 'website',
+})
 </script>
 
 <style scoped>
 .header {
   background-color: var(--header-color);
   padding: 16px;
+  height: 82px;
 }
 
 .main {
-  min-height: calc(100vh - 56px);
+  height: calc(100vh - 82px);
 }
 </style>

@@ -6,12 +6,12 @@
     --table-header-bg: #f1f5f9;
 
     --text-color: #1e293b;
-    --muted-text-color: #64748b;
+    --muted-text-color: #485668;
 
     --border-color: #dbe1ea;
     --primary-color: #0f354b;
 
-    --header-color: #64748b;
+    --header-color: #94a3b8;
 
     --control-bg: #ffffff;
     --control-border: #cbd5e1;
@@ -26,6 +26,9 @@
 
     --button-disabled-bg: #e2e8f0;
     --button-disabled-text: #94a3b8;
+
+    --highlight-bg: #fef08a;
+    --highlight-text: #713f12;
 }
 
 html.dark {
@@ -56,6 +59,9 @@ html.dark {
 
     --button-disabled-bg: #e2e8f0;
     --button-disabled-text: #94a3b8;
+
+    --highlight-bg: #854d0e;
+    --highlight-text: #fef9c3;
 }
 
 * {
@@ -69,6 +75,8 @@ body,
 }
 
 body {
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
     background: var(--page-bg);
     color: var(--text-color);
