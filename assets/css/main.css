@@ -1,0 +1,136 @@
+:root {
+    color-scheme: light;
+
+    --page-bg: #f5f7fb;
+    --surface-bg: #ffffff;
+    --table-header-bg: #f1f5f9;
+
+    --text-color: #1e293b;
+    --muted-text-color: #64748b;
+
+    --border-color: #dbe1ea;
+    --primary-color: #0f354b;
+
+    --header-color: #64748b;
+
+    --control-bg: #ffffff;
+    --control-border: #cbd5e1;
+    --control-border-hover: #94a3b8;
+    --control-placeholder: #94a3b8;
+    --control-focus: #0f354b;
+
+    --button-bg: #0b486b;
+    --button-bg-hover: #093149;
+    --button-bg-active: #0b486b;
+    --button-text: #ffffff;
+
+    --button-disabled-bg: #e2e8f0;
+    --button-disabled-text: #94a3b8;
+}
+
+html.dark {
+    color-scheme: dark;
+
+    --page-bg: #0f172a;
+    --surface-bg: #1e293b;
+    --table-header-bg: #263449;
+
+    --text-color: #f1f5f9;
+    --muted-text-color: #94a3b8;
+
+    --border-color: #334155;
+    --primary-color: #0b486b;
+
+    --header-color: #1e293b;
+
+    --control-bg: #172238;
+    --control-border: #3a4963;
+    --control-border-hover: #64748b;
+    --control-placeholder: #7f8da3;
+    --control-focus: #0b486b;
+
+    --button-bg: #0b486b;
+    --button-bg-hover: #093149;
+    --button-bg-active: #0b486b;
+    --button-text: #ffffff;
+
+    --button-disabled-bg: #e2e8f0;
+    --button-disabled-text: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#__nuxt {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--text-color);
+    font-family:
+            Inter, system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+}
+
+.container {
+    padding: 16px;
+    margin: 0 auto;
+
+    @media screen and (min-width: 1200px) {
+        max-width: 1000px;
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+button {
+    min-width: 80px;
+    height: 42px;
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: var(--button-bg);
+    color: var(--button-text);
+
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition:
+            background-color 0.2s,
+            box-shadow 0.2s,
+            transform 0.1s;
+}
+
+button:hover:not(:disabled) {
+    background: var(--button-bg-hover);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(1px);
+    background: var(--button-bg-active);
+}
+
+button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(
+            in srgb,
+            var(--button-bg) 30%,
+            transparent
+    );
+}
+
+button:disabled {
+    background: var(--button-disabled-bg);
+    color: var(--button-disabled-text);
+    cursor: not-allowed;
+}

@@ -1,6 +1,9 @@
-import {type User, USER_ROLES, type UserRole} from "~/types/User.ts";
+import {type User, type UserRole} from "~/types/User.ts";
 import type {LocationQueryRaw} from 'vue-router';
-import {DEFAULT_PER_PAGE, PER_PAGE_OPTIONS, type PerPage} from "~/constants/pagination.ts";
+import {DEFAULT_PER_PAGE} from "~/constants/pagination.ts";
+import type {SortDirection, SortField} from "~/constants/sorting.ts";
+import {filterUsers, sortUsers} from '~/utils/usersTable';
+import {isPerPage, isSortDirection, isSortField, isUserRole} from '~/utils/usersTableGuards';
 
 export function useUsersTable(users: User[]) {
   const route = useRoute();
@@ -15,25 +18,20 @@ export function useUsersTable(users: User[]) {
     });
   }
 
-  // filters
-  const search = computed<string | null>({
+  const search = computed<string>({
     get() {
       const value = route.query.search;
 
-      return typeof value === 'string' ? value : null;
+      return typeof value === 'string' ? value : '';
     },
 
     set(value) {
       updateQuery({
-        search: value?.length ? value : undefined,
+        search: value.length ? value : undefined,
         page: undefined,
       });
     },
   });
-
-  function isUserRole(value: unknown): value is UserRole {
-    return USER_ROLES.some(role => role === value);
-  }
 
   const role = computed<UserRole | null>({
     get() {
@@ -41,7 +39,6 @@ export function useUsersTable(users: User[]) {
 
       return isUserRole(value) ? value : null;
     },
-
     set(value) {
       updateQuery({
         role: value ?? undefined,
@@ -50,11 +47,46 @@ export function useUsersTable(users: User[]) {
     },
   });
 
-  // sorting
-  const sortBy = ref(null) // 'age' | 'createdAt'
-  const sortDirection = ref('asc')
+  const sortBy = computed<SortField | null>(() => {
+    const value = route.query.sortBy;
 
-  // pagination
+    return isSortField(value) ? value : null;
+  });
+
+  const sortDirection = computed<SortDirection>(() => {
+    const value = route.query.sortDirection;
+
+    return isSortDirection(value) ? value : 'asc';
+  });
+
+  function onSort(field: SortField) {
+    if (sortBy.value !== field) {
+      updateQuery({
+        sortBy: field,
+        sortDirection: 'asc',
+        page: undefined,
+      });
+
+      return;
+    }
+
+    if (sortDirection.value === 'asc') {
+      updateQuery({
+        sortBy: field,
+        sortDirection: 'desc',
+        page: undefined,
+      });
+
+      return;
+    }
+
+    updateQuery({
+      sortBy: undefined,
+      sortDirection: undefined,
+      page: undefined,
+    });
+  }
+
   const page = computed({
     get: () => {
       const value = Number(route.query.page);
@@ -65,14 +97,6 @@ export function useUsersTable(users: User[]) {
       page: value === 1 ? undefined : String(value),
     }),
   });
-
-
-  function isPerPage(value: number): value is PerPage {
-    return (
-      value === 0
-      || PER_PAGE_OPTIONS.some(option => option === value)
-    );
-  }
 
   const perPage = computed({
     get() {
@@ -96,64 +120,40 @@ export function useUsersTable(users: User[]) {
     },
   })
 
+  const filteredUsers = computed(() =>
+    filterUsers(users, search.value, role.value),
+  );
 
-
-
-  // TODO:
-  // - filteredUsers
-  // - sortedUsers
-  // - paginatedUsers
-  // - totalPages
-  function userRoleCheck(userRole: UserRole, checkRole: UserRole | null) {
-    if (!checkRole) {
-      return true;
-    }
-
-    return userRole === checkRole;
-  }
-
-  function userSearchCheck(user: User, value: string | null) {
-    if (!value) {
-      return true;
-    }
-
-    const valueNormanized = value.toLocaleLowerCase().trim();
-    const nameNormalized = user.name.toLocaleLowerCase();
-    const emailNormalized = user.email.toLocaleLowerCase();
-
-    return nameNormalized.includes(valueNormanized) || emailNormalized.includes(valueNormanized);
-  }
-
-  const filteredUsers = computed(() => {
-    if (role.value === null && search.value === null) {
-      return users
-    }
-
-    return users.filter(user => {
-      const roleCheck = userRoleCheck(user.role, role.value)
-      const searchCheck = userSearchCheck(user, search.value)
-
-      return roleCheck && searchCheck;
-    })
-  })
+  const sortedUsers = computed(() =>
+    sortUsers(
+      filteredUsers.value,
+      sortBy.value,
+      sortDirection.value,
+    ),
+  );
 
   const paginatedUsers = computed(() => {
     if (perPage.value === 0) {
-      return filteredUsers.value;
+      return sortedUsers.value;
     }
 
     const sliceFrom = (page.value - 1) * perPage.value;
-    const sliceTo = sliceFrom + perPage.value;
 
-    return filteredUsers.value.slice(sliceFrom, sliceTo);
-  })
+    return sortedUsers.value.slice(
+      sliceFrom,
+      sliceFrom + perPage.value,
+    );
+  });
 
   const totalPages = computed(() => {
     if (perPage.value === 0) {
       return 1;
     }
 
-    return Math.ceil(filteredUsers.value.length / perPage.value);
+    return Math.max(
+      1,
+      Math.ceil(sortedUsers.value.length / perPage.value),
+    );
   });
 
   return {
@@ -166,5 +166,7 @@ export function useUsersTable(users: User[]) {
 
     paginatedUsers,
     totalPages,
+
+    onSort,
   }
 }
