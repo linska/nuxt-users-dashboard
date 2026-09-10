@@ -87,6 +87,17 @@ export function useUsersTable(users: User[]) {
     });
   }
 
+  function resetTableState() {
+    updateQuery({
+      search: undefined,
+      role: undefined,
+      sortBy: undefined,
+      sortDirection: undefined,
+      page: undefined,
+      perPage: undefined,
+    });
+  }
+
   const page = computed({
     get: () => {
       const value = Number(route.query.page);
@@ -168,5 +179,6 @@ export function useUsersTable(users: User[]) {
     totalPages,
 
     onSort,
+    resetTableState,
   }
 }

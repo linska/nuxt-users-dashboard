@@ -7,6 +7,7 @@
       @update:search="search = $event"
       @update:role="role = $event"
       @update:perPage="perPage = $event"
+      @click:reset="resetTableState"
     />
 
     <UserTable
@@ -39,6 +40,7 @@ const {
   paginatedUsers,
   totalPages,
   onSort,
+  resetTableState,
 } = useUsersTable(users)
 </script>
 

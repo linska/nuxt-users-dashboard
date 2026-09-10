@@ -1,5 +1,13 @@
 <template>
   <div class="filters">
+    <button
+      type="button"
+      class="reset-button"
+      @click="$emit('click:reset')"
+    >
+      Reset all
+    </button>
+
     <BaseInput
       v-model="localSearch"
       name="search"
@@ -37,6 +45,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits([
+  'click:reset',
   'update:search',
   'update:role',
   'update:perPage',
@@ -89,6 +98,7 @@ onBeforeUnmount(() => {
 .filters {
   display: flex;
   flex-wrap: wrap;
+  align-items: end;
   gap: 8px;
   margin-bottom: 12px;
 }
