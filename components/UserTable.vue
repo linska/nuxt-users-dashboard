@@ -1,5 +1,5 @@
 <template>
-  <div class="table-wrapper">
+  <div ref="tableWrapper" class="table-wrapper">
     <table>
       <thead>
         <tr>
@@ -88,6 +88,21 @@ function getSortIcon(field: SortField) {
 
   return props.sortDirection === 'asc' ? '↑' : '↓';
 }
+
+const tableWrapper =
+  useTemplateRef<HTMLDivElement>('tableWrapper');
+
+function scrollToTop() {
+  console.log('scrollToTop');
+  tableWrapper.value?.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+}
+
+defineExpose({
+  scrollToTop,
+});
 </script>
 
 <style scoped>

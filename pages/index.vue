@@ -16,6 +16,7 @@
       :sort-by="sortBy"
       :sort-direction="sortDirection"
       :search="search"
+      ref="userTable"
     />
 
     <PaginationControls
@@ -42,6 +43,13 @@ const {
   onSort,
   resetTableState,
 } = useUsersTable(users)
+
+const userTable = useTemplateRef('userTable');
+
+watch(page, async () => {
+  await nextTick();
+  userTable.value?.scrollToTop();
+});
 </script>
 
 <style scoped>
