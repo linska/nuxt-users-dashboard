@@ -93,7 +93,6 @@ const tableWrapper =
   useTemplateRef<HTMLDivElement>('tableWrapper');
 
 function scrollToTop() {
-  console.log('scrollToTop');
   tableWrapper.value?.scrollTo({
     top: 0,
     behavior: 'smooth',
