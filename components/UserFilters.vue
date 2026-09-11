@@ -3,7 +3,7 @@
     <button
       type="button"
       class="reset-button"
-      @click="$emit('click:reset')"
+      @click="resetAll"
     >
       Reset all
     </button>
@@ -20,7 +20,7 @@
     <BaseSelect
       :model-value="role"
       @update:model-value="$emit('update:role', $event)"
-      :options="['admin', 'manager', 'user']"
+      :options="userRolesOptions"
       name="role"
       label="Role"
     />
@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import {PER_PAGE_OPTIONS, type PerPage, type PageSize} from '~/constants/pagination';
+import {USER_ROLES} from "~/types/User.ts";
 
 const props = defineProps<{
   search?: string;
@@ -62,7 +63,7 @@ const perPageModel = computed<PageSize | null>({
   },
 });
 
-
+const userRolesOptions = [...USER_ROLES];
 const perPageOptions = [...PER_PAGE_OPTIONS]
 const localSearch = ref(props.search);
 let searchTimer: ReturnType<typeof setTimeout>;
@@ -80,6 +81,11 @@ function clearSearch() {
 
   localSearch.value = '';
   emit('update:search', '');
+}
+
+function resetAll() {
+  clearTimeout(searchTimer);
+  emit('click:reset')
 }
 
 watch(

@@ -39,6 +39,7 @@ export function useUsersTable(users: User[]) {
 
       return isUserRole(value) ? value : null;
     },
+
     set(value) {
       updateQuery({
         role: value ?? undefined,
@@ -98,16 +99,17 @@ export function useUsersTable(users: User[]) {
     });
   }
 
-  const page = computed({
-    get: () => {
-      const value = Number(route.query.page);
+  const filteredUsers = computed(() =>
+    filterUsers(users, search.value, role.value),
+  );
 
-      return Number.isInteger(value) && value > 0 ? value : 1;
-    },
-    set: value => updateQuery({
-      page: value === 1 ? undefined : String(value),
-    }),
-  });
+  const sortedUsers = computed(() =>
+    sortUsers(
+      filteredUsers.value,
+      sortBy.value,
+      sortDirection.value,
+    ),
+  );
 
   const perPage = computed({
     get() {
@@ -123,6 +125,7 @@ export function useUsersTable(users: User[]) {
         ? queryValue
         : DEFAULT_PER_PAGE;
     },
+    
     set(value) {
       updateQuery({
         perPage: String(value),
@@ -131,17 +134,34 @@ export function useUsersTable(users: User[]) {
     },
   })
 
-  const filteredUsers = computed(() =>
-    filterUsers(users, search.value, role.value),
-  );
+  const totalPages = computed(() => {
+    if (perPage.value === 0) {
+      return 1;
+    }
 
-  const sortedUsers = computed(() =>
-    sortUsers(
-      filteredUsers.value,
-      sortBy.value,
-      sortDirection.value,
-    ),
-  );
+    return Math.max(
+      1,
+      Math.ceil(sortedUsers.value.length / perPage.value),
+    );
+  });
+
+  const page = computed<number>({
+    get() {
+      const value = Number(route.query.page);
+
+      if (!Number.isInteger(value) || value < 1) {
+        return 1;
+      }
+
+      return Math.min(value, totalPages.value);
+    },
+
+    set(value) {
+      updateQuery({
+        page: value === 1 ? undefined : String(value),
+      });
+    },
+  });
 
   const paginatedUsers = computed(() => {
     if (perPage.value === 0) {
@@ -153,17 +173,6 @@ export function useUsersTable(users: User[]) {
     return sortedUsers.value.slice(
       sliceFrom,
       sliceFrom + perPage.value,
-    );
-  });
-
-  const totalPages = computed(() => {
-    if (perPage.value === 0) {
-      return 1;
-    }
-
-    return Math.max(
-      1,
-      Math.ceil(sortedUsers.value.length / perPage.value),
     );
   });
 
