@@ -176,6 +176,16 @@ export function useUsersTable(users: User[]) {
     );
   });
 
+  const canResetTableState = computed(() =>
+    Boolean(
+      search.value
+      || role.value
+      || sortBy.value
+      || route.query.page
+      || route.query.perPage
+    ),
+  );
+
   return {
     search,
     role,
@@ -186,6 +196,8 @@ export function useUsersTable(users: User[]) {
 
     paginatedUsers,
     totalPages,
+
+    canResetTableState,
 
     onSort,
     resetTableState,

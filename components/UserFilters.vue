@@ -4,6 +4,7 @@
       type="button"
       class="reset-button"
       @click="resetAll"
+      :disabled="!canReset"
     >
       Reset all
     </button>
@@ -43,6 +44,7 @@ const props = defineProps<{
   search?: string;
   role?: string | null;
   perPage: PerPage;
+  canReset?: boolean;
 }>()
 
 const emit = defineEmits([

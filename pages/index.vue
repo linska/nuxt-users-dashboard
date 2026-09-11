@@ -4,6 +4,7 @@
       :search="search"
       :role="role"
       :perPage="perPage"
+      :can-reset="canResetTableState"
       @update:search="search = $event"
       @update:role="role = $event"
       @update:perPage="perPage = $event"
@@ -40,6 +41,7 @@ const {
   perPage,
   paginatedUsers,
   totalPages,
+  canResetTableState,
   onSort,
   resetTableState,
 } = useUsersTable(users)
